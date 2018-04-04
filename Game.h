@@ -32,8 +32,8 @@ public:
 private:
 
 	void CreateMatrices();
-	void PreComputeCubemaps();
-	void PreComputerBrdfLUT();
+	//void PreComputeCubemaps();
+	//void PreComputerBrdfLUT();
 	
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.

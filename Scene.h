@@ -7,48 +7,55 @@
 
 class Scene
 {
-	Mesh * sphere;
-	Mesh * cube;
+	Mesh* sphereMesh;
+	Mesh* cubeMesh;
 
-	Material *PBRmaterial;
-	Material *skyBoxMaterial;
+    Material* skyBoxMaterial;
+	Material* snowManMaterial;
+	Material* snowManEyesMaterial;
+	Material* groundMaterial;
+	
+	/*Material *PBRmaterial;
 	Material *enviDiffuseMaterial;
 	Material *prefilteredMaterial;
-	Material *brdfLUTMaterial;
+	Material *brdfLUTMaterial;*/
 
 	// Entity mesh
-	Mesh * snowMan0Mesh;
-	Mesh * snowMan1Mesh;
 	Mesh * skyBoxMesh;
-	Mesh * plane2dMesh;
+	Mesh * groundMesh;
 
 public:
 	Scene();
 	~Scene();
-   // Entity * spheres[5][5];
-	Entity* snowMan0;
-	Entity * quads[2];
+	Entity* snowMan0Body;
+	Entity* snowMan0Head;
+	Entity* snowMan0Eye0;
+	Entity* snowMan0Eye1;
+
+	Entity* ground;
+	Entity* skyBox;
+
 	PointLight pointLight0;
 	PointLight pointLight1;
 	PointLight pointLight2;
 	PointLight pointLight3;
-	Entity * skyBox;
+	
 
 	// use for shadow map
 	std::vector<Entity *> entitiesOpaque;
-	Material *shadowMap;
+	Material* shadowMapMat;
 
 
 	// Actually another scene, there's a cube to draw the skybox on and to be captured to generate irradiance
-	Entity * cubeForCaptureEnviDiffuse;
-	Entity * cubeForCapturePrefiltered;
-	Entity * brdfLUT;
+	//Entity * cubeForCaptureEnviDiffuse;
+	//Entity * cubeForCapturePrefiltered;
+	//Entity * brdfLUT;
 
-	// use for PBR
-	XMFLOAT3 albedo;
-	float metallic[5];
-	float roughness[5];
-	float ao;
+	//// use for PBR
+	//XMFLOAT3 albedo;
+	//float metallic[5];
+	//float roughness[5];
+	//float ao;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void CreateBasicGeometry(ID3D11Device *);

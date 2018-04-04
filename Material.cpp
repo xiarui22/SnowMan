@@ -29,6 +29,9 @@ Material::Material(ID3D11Device * device, ID3D11DeviceContext * context, Materia
 
 	this->type = type;
 
+	if (type == kMaterialGeneral) {
+		SetTexture(device, context, path, 0);
+	}
 	if (type == kMaterialNormal) {
 		SetTexture(device, context, path, normalpath);
 	}
@@ -53,10 +56,10 @@ void Material::SetTexture(ID3D11Device* device, ID3D11DeviceContext* context, co
 
 	DirectX::CreateWICTextureFromFile(device, context, path, 0, &srv);
 
-	//if (normalpath) {
-	//	ID3D11ShaderResourceView *temp = static_cast<ID3D11ShaderResourceView*>(normalSRV);
-	//	DirectX::CreateWICTextureFromFile(device, context, path, 0, &temp);
-	//}
+	/*if (normalpath) {
+		ID3D11ShaderResourceView *temp = static_cast<ID3D11ShaderResourceView*>(normalSRV);
+		DirectX::CreateWICTextureFromFile(device, context, path, 0, &temp);
+	}*/
 }
 
 void Material::SetupSkybox(ID3D11Device* device, ID3D11DeviceContext* context, const wchar_t* path)

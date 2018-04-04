@@ -155,55 +155,32 @@ void ShadowMapRenderer::RenderDepthMap(ID3D11DeviceContext * context, Scene * sc
 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	shadowMapVS = scene->shadowMap->GetvertexShader();
+	shadowMapVS = scene->shadowMapMat->GetvertexShader();
 	shadowMapVS->SetShader();
 	shadowMapVS->SetMatrix4x4("lightView", lightViewMatrix);
 	shadowMapVS->SetMatrix4x4("lightProjection", lightProjectionMatrix);
 	context->PSSetShader(0, 0, 0); // turn off pixel shader
-	for (int i = 0; i <2; i++) {
 
-		scene->quads[i]->setWorld(scene->quads[i]->getScale(), scene->quads[i]->getRotate(), scene->quads[i]->getTranslation());
+	for (Entity *q : scene->entitiesOpaque) {
 
-		shadowMapVS->SetMatrix4x4("world", scene->quads[i]->getWorld());
-		
+		q->setWorld();
+		shadowMapVS->SetMatrix4x4("world", q->getWorld());
+
 		shadowMapVS->CopyAllBufferData();
-
-		ID3D11Buffer* vertexBuffer = scene->quads[i]->GetMesh()->GetVertexBuffer();
+		ID3D11Buffer* vertexBuffer = q->GetMesh()->GetVertexBuffer();
 
 		context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 
-		context->IASetIndexBuffer(scene->quads[i]->GetMesh()->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetIndexBuffer(q->GetMesh()->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 
 		context->DrawIndexed(
-			scene->quads[i]->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+			q->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
 			0,     // Offset to the first index we want to use
 			0);    // Offset to add to each index when looking up vertices
+
 	}
+		
 
-
-//	for (int i = 0; i < 5; i++) {
-//		for (int j = 0; j <5; j++) {
-//
-//			scene->spheres[i][j]->setWorld(scene->spheres[i][j]->getScale(), scene->spheres[i][j]->getRotate(), scene->spheres[i][j]->getTranslation());
-//
-//			shadowMapVS->SetMatrix4x4("world", scene->spheres[i][j]->getWorld());
-//	
-//			shadowMapVS->CopyAllBufferData();
-//		
-//			ID3D11Buffer* vertexBuffer = scene->spheres[i][j]->getMesh()->GetVertexBuffer();
-//
-//			context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-//
-//			context->IASetIndexBuffer(scene->spheres[i][j]->getMesh()->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-//
-//			context->DrawIndexed(
-//				scene->spheres[i][j]->getMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-//				0,     // Offset to the first index we want to use
-//				0);    // Offset to add to each index when looking up vertices
-//		}
-//	}
-//
-//	context->RSSetState(0);
 }
 
 

@@ -3,7 +3,7 @@
 #include "SimpleShader.h"
 #include <DirectXMath.h>
 
-enum MaterialType { kMaterialNormal, kMaterialCubemap, kMaterialPBR };
+enum MaterialType { kMaterialGeneral, kMaterialNormal, kMaterialCubemap, kMaterialPBR };
 
 class Material
 {
@@ -16,6 +16,7 @@ class Material
 	MaterialType type;
 	ID3D11RasterizerState* rsSky;
 	ID3D11DepthStencilState* dsSky;
+
 
 	//PBR shader resource view
 	ID3D11ShaderResourceView * albedoSrv;

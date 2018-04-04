@@ -10,6 +10,13 @@ Mesh::Mesh()
 
 }
 
+Mesh::Mesh(Mesh * m)
+{
+	vertexBuffer = m->vertexBuffer;
+	indexBuffer = m->indexBuffer;
+	inte = m->inte;
+}
+
 void Mesh::createBuffer(Vertex vertices[], int vn, unsigned int  indices[], int in, ID3D11Device * device) {
 	inte = in;
 	D3D11_BUFFER_DESC vbd;
@@ -68,6 +75,7 @@ Mesh::Mesh(char * objFile, ID3D11Device * device) {
 		cout << objFile;
 		return;
     }
+
 	// Variables used while reading the file
 	vector<XMFLOAT3> positions;     // Positions from the file
 	vector<XMFLOAT3> normals;       // Normals from the file
@@ -228,11 +236,8 @@ Mesh::Mesh(char * objFile, ID3D11Device * device) {
 	// - Yes, the indices are a bit redundant here (one per vertex)
 
 	Vertex * vert0 = &verts[0];
-
-	//Vertex * vert0 = verts.data();
 	
 	unsigned int * indices0 = &indices[0];
-	//unsigned int * indices0 = indices.data();
 
 	createBuffer(vert0, vertCounter, indices0, vertCounter, device);
 

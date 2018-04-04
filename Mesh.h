@@ -16,16 +16,17 @@ class Mesh
 {
 	ID3D11Buffer* vertexBuffer;  //vertex buffer
 	ID3D11Buffer* indexBuffer;  //index buffer
+  
 	int inte = 0; //an integer specifying how many indices are in the mesh's index buffer
 public:
 	Mesh();
+	Mesh(Mesh*);
 	Mesh(Vertex vertices[], int vn, unsigned int  indices[], int in, ID3D11Device * device);
 	Mesh(char *, ID3D11Device * );
 	
 	~Mesh();
 	void createBuffer(Vertex vertices[], int vn, unsigned int  indices[], int in, ID3D11Device * device);
-	void SetVertexBuffer(std::vector<ID3D11Buffer*>);
-	void SetIndexBuffer(ID3D11Buffer*);
+
 	ID3D11Buffer* GetVertexBuffer();
 	ID3D11Buffer* GetIndexBuffer();
 	int GetIndexCount();

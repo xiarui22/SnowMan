@@ -6,30 +6,39 @@
 #include "Mesh.h"
 #include "Material.h"
 
-using namespace DirectX;
+
 class Entity
 {
 	Mesh* mesh;
 	Material* material;
 
-	XMFLOAT4X4 worldMatrix;
-	XMFLOAT3 translation;
-	XMFLOAT3 rotate;
-	XMFLOAT3 scale;
+	DirectX::XMFLOAT4X4 worldMatrix;
+
+	DirectX::XMFLOAT3 translation;
+	DirectX::XMFLOAT3 rotate;
+	DirectX::XMFLOAT3 scale;
+
 public:
 	Entity();
-	Entity(Mesh*, Material*);
+	Entity(Mesh*, Material*, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3);
 	~Entity();
+
+	void Update();
+
+	Entity* parent;
+	std::vector<Entity*> children;
+	void SetParent(Entity* e);
+
 
 	void setTranslation(float, float, float);
 	void setScale(float, float, float);
 	void setRotate(float, float, float);
-	XMFLOAT3 getTranslation();
-	XMFLOAT3 getScale();
-	XMFLOAT3 getRotate();
+	DirectX::XMFLOAT3 getTranslation();
+	DirectX::XMFLOAT3 getScale();
+	DirectX::XMFLOAT3 getRotate();
 
-	void setWorld(XMFLOAT3, XMFLOAT3, XMFLOAT3);
-	XMFLOAT4X4 getWorld();
+	void setWorld();
+	DirectX::XMFLOAT4X4 getWorld();
 
 	Mesh* GetMesh();
 	Material* GetMaterial();

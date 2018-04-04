@@ -87,72 +87,72 @@ void Game::CreateMatrices()
 
 
 
-void Game::PreComputeCubemaps()
-{
-	environmentDiffuseCapturer = new CaptureIrradiance();
-	prefilteredCapturer = new CaptureIrradiance();
-
-	if (environmentDiffuseCapturer->EnvironmentDiffuseMapExists(device));
-	else {
-		environmentDiffuseCapturer->Init(device,context, 512, 512);
-		environmentDiffuseCapturer->RenderEnvironmentDiffuseMap(context, scene->cubeForCaptureEnviDiffuse);
-		if (environmentDiffuseCapturer->SaveEnvironmentDiffuseMap(device, context));
-		else cout << "saved diffuse irradiance map failed" << endl;
-
-		context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
-		D3D11_VIEWPORT viewport = {};
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.Width = (float)width;
-		viewport.Height = (float)height;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-		context->RSSetViewports(1, &viewport);
-	}
-	if (prefilteredCapturer->PrefilteredMapExists(device));
-	else {
-		prefilteredCapturer->Init(device,context, 512, 512);
-		prefilteredCapturer->RenderPrefilteredMap(context, scene->cubeForCapturePrefiltered);
-		if (prefilteredCapturer->SavePrefilteredMap(device, context));
-		else cout << "saved prefiltered map failed" << endl;
-
-		context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
-		D3D11_VIEWPORT viewport = {};
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.Width = (float)width;
-		viewport.Height = (float)height;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-		context->RSSetViewports(1, &viewport);
-	}
-	
-	
-}
-
-void Game::PreComputerBrdfLUT()
-{
-	brdfLUTCapturer = new CaptureTexture2d();
-
-    if (brdfLUTCapturer->BrdfLUTExists(device, context));
-	else {
-		brdfLUTCapturer->Init(device, context, 512, 512);
-		brdfLUTCapturer->RenderBrdfLUT(context, scene->brdfLUT);
-		if (brdfLUTCapturer->SaveBrdfLUT(device, context));
-		else cout << "saved BrdfLUT failed" << endl;
-
-		context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
-		D3D11_VIEWPORT viewport = {};
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.Width = (float)width;
-		viewport.Height = (float)height;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-		context->RSSetViewports(1, &viewport);
-	}
-
-}
+//void Game::PreComputeCubemaps()
+//{
+//	environmentDiffuseCapturer = new CaptureIrradiance();
+//	prefilteredCapturer = new CaptureIrradiance();
+//
+//	if (environmentDiffuseCapturer->EnvironmentDiffuseMapExists(device));
+//	else {
+//		environmentDiffuseCapturer->Init(device,context, 512, 512);
+//		environmentDiffuseCapturer->RenderEnvironmentDiffuseMap(context, scene->cubeForCaptureEnviDiffuse);
+//		if (environmentDiffuseCapturer->SaveEnvironmentDiffuseMap(device, context));
+//		else cout << "saved diffuse irradiance map failed" << endl;
+//
+//		context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
+//		D3D11_VIEWPORT viewport = {};
+//		viewport.TopLeftX = 0;
+//		viewport.TopLeftY = 0;
+//		viewport.Width = (float)width;
+//		viewport.Height = (float)height;
+//		viewport.MinDepth = 0.0f;
+//		viewport.MaxDepth = 1.0f;
+//		context->RSSetViewports(1, &viewport);
+//	}
+//	if (prefilteredCapturer->PrefilteredMapExists(device));
+//	else {
+//		prefilteredCapturer->Init(device,context, 512, 512);
+//		prefilteredCapturer->RenderPrefilteredMap(context, scene->cubeForCapturePrefiltered);
+//		if (prefilteredCapturer->SavePrefilteredMap(device, context));
+//		else cout << "saved prefiltered map failed" << endl;
+//
+//		context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
+//		D3D11_VIEWPORT viewport = {};
+//		viewport.TopLeftX = 0;
+//		viewport.TopLeftY = 0;
+//		viewport.Width = (float)width;
+//		viewport.Height = (float)height;
+//		viewport.MinDepth = 0.0f;
+//		viewport.MaxDepth = 1.0f;
+//		context->RSSetViewports(1, &viewport);
+//	}
+//	
+//	
+//}
+//
+//void Game::PreComputerBrdfLUT()
+//{
+//	brdfLUTCapturer = new CaptureTexture2d();
+//
+//    if (brdfLUTCapturer->BrdfLUTExists(device, context));
+//	else {
+//		brdfLUTCapturer->Init(device, context, 512, 512);
+//		brdfLUTCapturer->RenderBrdfLUT(context, scene->brdfLUT);
+//		if (brdfLUTCapturer->SaveBrdfLUT(device, context));
+//		else cout << "saved BrdfLUT failed" << endl;
+//
+//		context->OMSetRenderTargets(1, &backBufferRTV, depthStencilView);
+//		D3D11_VIEWPORT viewport = {};
+//		viewport.TopLeftX = 0;
+//		viewport.TopLeftY = 0;
+//		viewport.Width = (float)width;
+//		viewport.Height = (float)height;
+//		viewport.MinDepth = 0.0f;
+//		viewport.MaxDepth = 1.0f;
+//		context->RSSetViewports(1, &viewport);
+//	}
+//
+//}
 
 
 
@@ -180,14 +180,13 @@ void Game::Update(float deltaTime, float totalTime)
 	//float moving = sin(0) * 2.0f;
 
 
-	scene->quads[0]->setTranslation(0, 0, 0);
-	scene->quads[0]->setScale(5, 0.1, 5);
-	scene->quads[0]->setTranslation(2, -0.5, 0);
+	scene->snowMan0Body->Update();
+	scene->snowMan0Head->Update();
+	scene->snowMan0Eye0->Update();
+	scene->snowMan0Eye1->Update();
 
-	scene->quads[1]->setTranslation(0, 0, 0);
-	scene->quads[1]->setScale(5, 0.1, 5);
-	scene->quads[1]->setRotate(3.14/2, 0, 0);
-	scene->quads[1]->setTranslation(2, 2, 3);
+	scene->ground->Update();
+	scene->skyBox->Update();
 
 	camera->Update(deltaTime);
 }
@@ -231,43 +230,43 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	for (int i = 0; i <2; i++) {
+	for (Entity *q : scene->entitiesOpaque) {
 
-		scene->quads[i]->setWorld(scene->quads[i]->getScale(), scene->quads[i]->getRotate(), scene->quads[i]->getTranslation());
+		q->setWorld();
 
-		scene->quads[i]->GetMaterial()->SetVertexShaderMatrix(scene->quads[i]->getWorld(), camera->GetView(), camera->GetProjection());
-		//set light
-		scene->quads[i]->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightView", shadowMapRender->lightViewMatrix);
-		scene->quads[i]->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightProjection", shadowMapRender->lightProjectionMatrix);
-		scene->quads[i]->GetMaterial()->GetvertexShader()->CopyAllBufferData();
+		q->GetMaterial()->SetVertexShaderMatrix(q->getWorld(), camera->GetView(), camera->GetProjection());
+		q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightView", shadowMapRender->lightViewMatrix);
+		q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightProjection", shadowMapRender->lightProjectionMatrix);
+		q->GetMaterial()->GetvertexShader()->CopyAllBufferData();
 
-		scene->quads[i]->GetMaterial()->GetvertexShader()->SetShader();
+		q->GetMaterial()->GetvertexShader()->SetShader();
 
 
-		scene->quads[i]->GetMaterial()->GetpixelShader()->SetFloat("metallicP", scene->metallic[i]); //vertically increase metallic
-		scene->quads[i]->GetMaterial()->GetpixelShader()->SetFloat("roughnessP", scene->roughness[i]);  //horizontally increase roughness
+		//q->GetMaterial()->GetpixelShader()->SetFloat("metallicP", scene->metallic[i]); //vertically increase metallic
+		//q->GetMaterial()->GetpixelShader()->SetFloat("roughnessP", scene->roughness[i]);  //horizontally increase roughness
 
-		scene->quads[i]->GetMaterial()->GetpixelShader()->SetData("pl0", &scene->pointLight0, sizeof(PointLight));
-		scene->quads[i]->GetMaterial()->GetpixelShader()->SetData("pl1", &scene->pointLight1, sizeof(PointLight));
-		scene->quads[i]->GetMaterial()->GetpixelShader()->SetData("pl2", &scene->pointLight2, sizeof(PointLight));
-		scene->quads[i]->GetMaterial()->GetpixelShader()->SetData("pl3", &scene->pointLight3, sizeof(PointLight));
+		q->GetMaterial()->GetpixelShader()->SetData("pl0", &scene->pointLight0, sizeof(PointLight));
+		q->GetMaterial()->GetpixelShader()->SetData("pl1", &scene->pointLight1, sizeof(PointLight));
+		q->GetMaterial()->GetpixelShader()->SetData("pl2", &scene->pointLight2, sizeof(PointLight));
+		q->GetMaterial()->GetpixelShader()->SetData("pl3", &scene->pointLight3, sizeof(PointLight));
 
-		scene->quads[i]->GetMaterial()->GetpixelShader()->SetFloat3("camPos", camera->GetCamPos());
-		scene->quads[i]->GetMaterial()->SetEnvironmentDiffuseSrvForPBR(environmentDiffuseCapturer->GetShaderResourceView());
-		scene->quads[i]->GetMaterial()->SetPrefilterMapSrvForPBR(prefilteredCapturer->GetShaderResourceView());
-		scene->quads[i]->GetMaterial()->SetBRDFLUTSrvForPBR(brdfLUTCapturer->GetShaderResourceView());
+		q->GetMaterial()->GetpixelShader()->SetFloat3("camPos", camera->GetCamPos());
+		//q->GetMaterial()->SetEnvironmentDiffuseSrvForPBR(environmentDiffuseCapturer->GetShaderResourceView());
+		//q->GetMaterial()->SetPrefilterMapSrvForPBR(prefilteredCapturer->GetShaderResourceView());
+		//q->GetMaterial()->SetBRDFLUTSrvForPBR(brdfLUTCapturer->GetShaderResourceView());
 		//scene->quads[i]->getMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
-		scene->quads[i]->GetMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
-		scene->quads[i]->GetMaterial()->SetPBRPixelShaderSrv();
+		q->GetMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
+		//q->GetMaterial()->SetPBRPixelShaderSrv();
+		q->GetMaterial()->SetPixelShaderSrv();
 
-		ID3D11Buffer* vertexBuffer = scene->quads[i]->GetMesh()->GetVertexBuffer();
+		ID3D11Buffer* vertexBuffer = q->GetMesh()->GetVertexBuffer();
 
 		context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 
-		context->IASetIndexBuffer(scene->quads[i]->GetMesh()->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetIndexBuffer(q->GetMesh()->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 
 		context->DrawIndexed(
-			scene->quads[i]->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+			q->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
 			0,     // Offset to the first index we want to use
 			0);    // Offset to add to each index when looking up vertices
 	}

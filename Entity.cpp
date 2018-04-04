@@ -1,35 +1,47 @@
 #include "Entity.h"
 
-
+using namespace DirectX;
 
 Entity::Entity()
 {
 }
 
-Entity::Entity(Mesh *pp, Material *mm)
+Entity::Entity(Mesh *pp, Material *mm, XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 sca)
 {
 	mesh = pp;
 	material = mm;
-	translation = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(0, 0, 0);
-	rotate = XMFLOAT3(0, 0, 0);
+	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
+	translation = pos;
+	scale = rot;
+	rotate = sca;
+	parent = NULL;
+	setWorld();
+}
+
+void Entity::SetParent(Entity * e)
+{
+	if (parent != nullptr) {
+		for (unsigned i = 0; i < parent->children.size(); i++) {
+			if (parent->children[i] == this) {
+				parent->children.erase(parent->children.begin() + i);
+				break;
+			}
+		}
+	}
+
+	parent = e;
+	e->children.push_back(this);
 }
 
 void Entity::setTranslation(float x, float y, float z) {
 	translation = XMFLOAT3(x, y, z);
-	//XMMATRIX translation = XMMatrixTranslation(x, y, z);
-	//XMStoreFloat4x4(&translationMatrix, translation);
 }
 
 void Entity::setScale(float x, float y, float z) {
 	scale = XMFLOAT3(x, y, z);
-	//XMMATRIX scale = XMMatrixScaling(x, y, z);
-	//XMStoreFloat4x4(&scaleMatrix, scale);
 }
 void Entity::setRotate(float x, float y, float z) {
 	rotate = XMFLOAT3(x, y, z);
-	//XMMATRIX scale = XMMatrixScaling(x, y, z);
-	//XMStoreFloat4x4(&scaleMatrix, scale);
 }
 XMFLOAT3 Entity::getTranslation() {
 	return translation;
@@ -41,17 +53,33 @@ XMFLOAT3 Entity::getRotate() {
 	return rotate;
 }
 
-void Entity::setWorld(XMFLOAT3 sm, XMFLOAT3 rm, XMFLOAT3 tm) {
-	XMMATRIX translation = XMMatrixTranslation(tm.x, tm.y, tm.z);
-	XMMATRIX scale = XMMatrixScaling(sm.x, sm.y, sm.z);
-	XMMATRIX rotation = XMMatrixRotationZ(rm.z);
-	rotation = XMMatrixMultiply(rotation, XMMatrixRotationX(rm.x));
-	rotation = XMMatrixMultiply(rotation, XMMatrixRotationY(rm.y));
+void Entity::setWorld() {
+	XMFLOAT3 tm = translation;
+	XMFLOAT3 sm = scale;
+	XMFLOAT3 rm = rotate;
+	XMMATRIX translationMat = XMMatrixTranslation(tm.x, tm.y, tm.z);
+	XMMATRIX scaleMat = XMMatrixScaling(sm.x, sm.y, sm.z);
+	XMMATRIX rotationMat = XMMatrixRotationZ(rm.z);
+	rotationMat = XMMatrixMultiply(rotationMat, XMMatrixRotationX(rm.x));
+	rotationMat = XMMatrixMultiply(rotationMat, XMMatrixRotationY(rm.y));
 
 	XMVECTOR rot = XMLoadFloat3(&rm);
 	XMMATRIX rotation0 = XMMatrixRotationRollPitchYawFromVector(rot);
 
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(scale * rotation0 * translation));
+	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(scaleMat * rotation0 * translationMat));
+
+
+	if (parent != nullptr) {
+		XMMATRIX local = scaleMat * rotation0 * translationMat;
+		local = XMMatrixMultiply(local, XMMatrixTranspose(XMLoadFloat4x4(&parent->getWorld())));
+		XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(local));
+	}
+
+	if (children.size()>0) {
+		for (Entity* e : children) {
+			e->setWorld();
+		}
+	}
 }
 
 
@@ -72,4 +100,9 @@ Material* Entity::GetMaterial()
 
 Entity::~Entity()
 {
+}
+
+void Entity::Update()
+{
+	setWorld();
 }

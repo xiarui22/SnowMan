@@ -12,8 +12,8 @@ class CaptureIrradiance
 	ID3D11RenderTargetView * capturedRTV[5][6];
 	ID3D11ShaderResourceView * capturedSRV;
 
-	XMFLOAT4X4 captureViews[6];
-	XMFLOAT4X4 captureProjection;
+	DirectX::XMFLOAT4X4 captureViews[6];
+	DirectX::XMFLOAT4X4 captureProjection;
 
 	int width;
 	int height;
