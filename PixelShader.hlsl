@@ -12,7 +12,6 @@ struct VertexToPixel
 	//  |    |                |
 	//  v    v                v
 	float4 position		: SV_POSITION;
-	//float4 color		: COLOR;
 	float3 normal       : NORMAL;
 	float3 worldPos		: WORLDPOS;
 	float2 uv           : TEXCOORD;
@@ -40,14 +39,17 @@ struct PointLight {
 	float4 pointLightColor;
 	float3 pointLightPosition;
 	float i;
-	float3 cameraPosition;
 };
 
 cbuffer externalData : register(b0)
 {
-	DirectionalLight dl;
-	DirectionalLight dl0;
-	PointLight pl;
+
+	PointLight pl0;
+	PointLight pl1;
+	PointLight pl2;
+	PointLight pl3;
+
+	float3 camPos;
 };
 
 Texture2D diffuseTexture  : register(t0);
@@ -62,23 +64,30 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
 
 	input.normal = normalize(input.normal);
-//directional light 
-float lightAmountDL = saturate(dot(input.normal, normalize(-dl.Direction)));
-float4 dlight = dl.DiffuseColor* lightAmountDL*surfaceColor + dl.AmbientColor;
 
-float lightAmountDL0 = saturate(dot(input.normal, normalize(-dl0.Direction)));
-float4 dlight0 = dl0.DiffuseColor* lightAmountDL0*surfaceColor + dl0.AmbientColor;
+////directional light 
+//float lightAmountDL = saturate(dot(input.normal, normalize(-sunLight.Direction)));
+//float4 dlight = sunLight.DiffuseColor* lightAmountDL*surfaceColor + sunLight.AmbientColor;
 
 //point light
-float3 dirToPointLight = normalize(pl.pointLightPosition - input.worldPos);
-float lightAmountPL = saturate(dot(input.normal, dirToPointLight));
-float4 plight = pl.pointLightColor * lightAmountPL*surfaceColor;
-// Specular highlight for point light
-float3 toCamera = normalize(pl.cameraPosition - input.worldPos);
-float3 refl = reflect(-dirToPointLight, input.normal);
-float specular = pow(saturate(dot(refl, toCamera)), 8);
+PointLight pointLight[4];
+pointLight[0] = pl0;
+pointLight[1] = pl1;
+pointLight[2] = pl2;
+pointLight[3] = pl3;
+float4 plight = float4(0, 0, 0, 1);
+for (int i = 0; i < 2; i++) {
+	float3 dirToPointLight = normalize(pointLight[i].pointLightPosition - input.worldPos);
+    float lightAmountPL = saturate(dot(input.normal, dirToPointLight));
+    plight += pointLight[i].pointLightColor * lightAmountPL*surfaceColor;
+}
 
-return  dlight + dlight0+ plight;
-	//return float4(1,1,1,1);
+// Specular highlight for point light
+//float3 toCamera = normalize(pl.cameraPosition - input.worldPos);
+//float3 refl = reflect(-dirToPointLight, input.normal);
+//float specular = pow(saturate(dot(refl, toCamera)), 8);
+
+//return  dlight + dlight0+ plight;
+	return plight;
 
 }

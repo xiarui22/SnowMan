@@ -39,6 +39,8 @@ public:
 	PointLight pointLight1;
 	PointLight pointLight2;
 	PointLight pointLight3;
+
+	DirectionalLight sunLight;
 	
 
 	// use for shadow map

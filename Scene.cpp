@@ -12,6 +12,8 @@ Scene::~Scene()
 	delete snowMan0Head;
 	delete snowMan0Eye0;
 	delete snowMan0Eye1;
+	delete skyBox;
+	delete ground;
 
 	delete cubeMesh;
 	delete sphereMesh;
@@ -20,10 +22,9 @@ Scene::~Scene()
 	delete snowManMaterial;
 	delete snowManEyesMaterial;
 	delete groundMaterial;
+	delete shadowMapMat;
 
 	// Entity mesh
-	
-	delete skyBoxMesh;
 	delete groundMesh;
 }
 
@@ -55,26 +56,24 @@ void Scene::CreateBasicGeometry(ID3D11Device * device)
 	
 	groundMesh = new Mesh(vertices, 4, indices, 6, device);
 
-	skyBoxMesh = new Mesh(cubeMesh);
-
 }
 
 void Scene::CreateMaterial(ID3D11Device * device, ID3D11DeviceContext * context)
 {
-	snowManMaterial = new Material(device, context, kMaterialNormal, L"Assets/Textures/snowTexture.jpg", nullptr, nullptr, nullptr, nullptr, nullptr);
+	snowManMaterial = new Material(device, context, kMaterialGeneral, L"Assets/Textures/snowTexture.jpg", nullptr, nullptr, nullptr, nullptr, nullptr);
 	snowManMaterial->LoadVertexShaders(device, context, L"VertexShader");
 	snowManMaterial->LoadPixelShaders(device, context, L"PixelShader");
 
-	snowManEyesMaterial = new Material(device, context, kMaterialNormal, L"Assets/Textures/parameter0.png", nullptr, nullptr, nullptr, nullptr, nullptr);
+	snowManEyesMaterial = new Material(device, context, kMaterialGeneral, L"Assets/Textures/parameter0.png", nullptr, nullptr, nullptr, nullptr, nullptr);
 	snowManEyesMaterial->LoadVertexShaders(device, context, L"VertexShader");
 	snowManEyesMaterial->LoadPixelShaders(device, context, L"PixelShader");
 
-	groundMaterial = new Material(device, context, kMaterialNormal, L"Assets/Textures/snowTexture.jpg", nullptr, nullptr, nullptr, nullptr, nullptr);
+	groundMaterial = new Material(device, context, kMaterialGeneral, L"Assets/Textures/snowTexture.jpg", nullptr, nullptr, nullptr, nullptr, nullptr);
 	groundMaterial->LoadVertexShaders(device, context, L"VertexShader");
 	groundMaterial->LoadPixelShaders(device, context, L"PixelShader");
 
 
-	skyBoxMaterial = new Material(device, context, kMaterialCubemap, L"Assets/Textures/Texture1.dds", nullptr, nullptr, nullptr, nullptr, nullptr);
+	skyBoxMaterial = new Material(device, context, kMaterialCubemap, L"Assets/Textures/snow.dds", nullptr, nullptr, nullptr, nullptr, nullptr);
     skyBoxMaterial->LoadVertexShaders(device, context, L"SkyVS");
 	skyBoxMaterial->LoadPixelShaders(device, context, L"SkyPS");
 
@@ -104,7 +103,7 @@ void Scene::CreateMaterial(ID3D11Device * device, ID3D11DeviceContext * context)
 void Scene::CreateLights()
 {
 	pointLight0.pointLightColor = XMFLOAT4(1, 1, 1, 1);
-	pointLight0.pointLightPosition = XMFLOAT3(5, 0, -4);
+	pointLight0.pointLightPosition = XMFLOAT3(5, 4, -4);
 
 	pointLight1.pointLightColor = XMFLOAT4(1, 1, 1, 1);
 	pointLight1.pointLightPosition = XMFLOAT3(0, 5, -4);
@@ -119,17 +118,17 @@ void Scene::CreateLights()
 
 void Scene::CreateEntities()
 {
-	snowMan0Body = new Entity(sphereMesh, snowManMaterial, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0));
+	snowMan0Body = new Entity(sphereMesh, snowManMaterial, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1));
 	snowMan0Head = new Entity(sphereMesh, snowManMaterial, XMFLOAT3(0, 0.5, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(0.8, 0.8, 0.8));
-	snowMan0Eye0 = new Entity(sphereMesh, snowManMaterial, XMFLOAT3(-0.2, 0.1, -0.2), XMFLOAT3(0, 0, 0), XMFLOAT3(0.1, 0.1, 0.1));
-	snowMan0Eye1 = new Entity(sphereMesh, snowManMaterial, XMFLOAT3(0.2, 0.1, -0.2), XMFLOAT3(0, 0, 0), XMFLOAT3(0.1, 0.1, 0.1));
+	snowMan0Eye0 = new Entity(sphereMesh, snowManEyesMaterial, XMFLOAT3(-0.2, 0.1, -0.5), XMFLOAT3(0, 0, 0), XMFLOAT3(0.1, 0.1, 0.1));
+	snowMan0Eye1 = new Entity(sphereMesh, snowManEyesMaterial, XMFLOAT3(0.2, 0.1, -0.5), XMFLOAT3(0, 0, 0), XMFLOAT3(0.1, 0.1, 0.1));
 	snowMan0Head->SetParent(snowMan0Body);
 	snowMan0Eye0->SetParent(snowMan0Head);
 	snowMan0Eye1->SetParent(snowMan0Head);
 
-	skyBox = new Entity(skyBoxMesh, skyBoxMaterial, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0));
+	skyBox = new Entity(cubeMesh, skyBoxMaterial, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1));
 
-	ground = new Entity(groundMesh, groundMaterial, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0));
+	ground = new Entity(groundMesh, groundMaterial, XMFLOAT3(0, -0.5, 0), XMFLOAT3(3.14f / 2, 0, 0), XMFLOAT3(5, 1, 5));
 
 	// For shadow map
 	entitiesOpaque.push_back(snowMan0Body);

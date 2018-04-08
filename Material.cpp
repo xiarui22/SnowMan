@@ -128,7 +128,7 @@ void Material::SetPBRTexture(ID3D11Device * device, ID3D11DeviceContext * contex
 void Material::LoadVertexShaders(ID3D11Device * device, ID3D11DeviceContext * context, const wchar_t * name)
 {
 	vertexShader = new SimpleVertexShader(device, context);
-	wstring path = L"Debug/" + (wstring)name + L".cso";
+	wstring path = L"x64/Debug/" + (wstring)name + L".cso";
 	const wchar_t *src = path.c_str();
 	vertexShader->LoadShaderFile(src);
 }
@@ -136,7 +136,7 @@ void Material::LoadVertexShaders(ID3D11Device * device, ID3D11DeviceContext * co
 void Material::LoadPixelShaders(ID3D11Device *device, ID3D11DeviceContext * context, const wchar_t * name)
 {
 	pixelShader = new SimplePixelShader(device, context);
-	wstring path = L"Debug/" + (wstring)name + L".cso";
+	wstring path = L"x64/Debug/" + (wstring)name + L".cso";
 	const wchar_t *src = path.c_str();
 	pixelShader->LoadShaderFile(src);
 }

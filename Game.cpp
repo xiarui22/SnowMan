@@ -44,9 +44,9 @@ Game::~Game()
 	// we've made in the Game class
 	delete camera;
 	delete scene;
-	delete environmentDiffuseCapturer;
-	delete prefilteredCapturer;
-	delete brdfLUTCapturer;
+//	delete environmentDiffuseCapturer;
+//	delete prefilteredCapturer;
+//	delete brdfLUTCapturer;
 	delete shadowMapRender;
 }
 
@@ -64,8 +64,8 @@ void Game::Init()
 	CreateMatrices();
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);	
 
-	PreComputeCubemaps();
-	PreComputerBrdfLUT();
+//	PreComputeCubemaps();
+//	PreComputerBrdfLUT();
 	
 	shadowMapRender = new ShadowMapRenderer();
 	shadowMapRender->Init(device, context,2048,2048);
@@ -81,7 +81,7 @@ void Game::Init()
 void Game::CreateMatrices()
 {
 	camera = new Camera(XMFLOAT3(2.0f, 2.0f, -8.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
-	//camera = new Camera(XMFLOAT3(0,2,-2), XMFLOAT3(0.0f, 0.0f, 1.0f));
+	//camera = new Camera(XMFLOAT3(0,2,-8), XMFLOAT3(0.0f, 0.0f, 1.0f));
 	camera->UpdateProjection(width, height);
 }
 
@@ -176,7 +176,7 @@ void Game::Update(float deltaTime, float totalTime)
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
 	//cout << deltaTime;
-	float moving = sin(totalTime) * 2.0f;
+	//float moving = sin(totalTime) * 2.0f;
 	//float moving = sin(0) * 2.0f;
 
 
@@ -224,8 +224,6 @@ void Game::Draw(float deltaTime, float totalTime)
 		1.0f,
 		0);
 
-	
-
 	// Set buffers in the input assembler
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
@@ -235,8 +233,8 @@ void Game::Draw(float deltaTime, float totalTime)
 		q->setWorld();
 
 		q->GetMaterial()->SetVertexShaderMatrix(q->getWorld(), camera->GetView(), camera->GetProjection());
-		q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightView", shadowMapRender->lightViewMatrix);
-		q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightProjection", shadowMapRender->lightProjectionMatrix);
+		//q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightView", shadowMapRender->lightViewMatrix);
+		//q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightProjection", shadowMapRender->lightProjectionMatrix);
 		q->GetMaterial()->GetvertexShader()->CopyAllBufferData();
 
 		q->GetMaterial()->GetvertexShader()->SetShader();
@@ -255,7 +253,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		//q->GetMaterial()->SetPrefilterMapSrvForPBR(prefilteredCapturer->GetShaderResourceView());
 		//q->GetMaterial()->SetBRDFLUTSrvForPBR(brdfLUTCapturer->GetShaderResourceView());
 		//scene->quads[i]->getMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
-		q->GetMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
+		//q->GetMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
 		//q->GetMaterial()->SetPBRPixelShaderSrv();
 		q->GetMaterial()->SetPixelShaderSrv();
 

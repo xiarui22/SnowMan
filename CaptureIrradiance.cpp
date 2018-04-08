@@ -2,7 +2,7 @@
 #include "DDSTextureLoader.h"
 #include "DirectXTex.h"
 
-
+using namespace DirectX;
 CaptureIrradiance::CaptureIrradiance()
 {
 	irradianceMap = 0;

@@ -5,8 +5,8 @@
 
 #include "Camera.h"
 #include "Scene.h"
-#include "CaptureIrradiance.h"
-#include "CaptureTexture2d.h"
+//#include "CaptureIrradiance.h"
+//#include "CaptureTexture2d.h"
 #include "ShadowMapRenderer.h"
 
 class Game 
@@ -42,10 +42,10 @@ private:
 	Camera * camera;
 	Scene * scene;
 	// For captures
-	CaptureIrradiance * environmentDiffuseCapturer;
-	CaptureIrradiance * prefilteredCapturer;
+	//CaptureIrradiance * environmentDiffuseCapturer;
+	//CaptureIrradiance * prefilteredCapturer;
 
-	CaptureTexture2d * brdfLUTCapturer;
+	//CaptureTexture2d * brdfLUTCapturer;
 	ShadowMapRenderer * shadowMapRender;
 };
 

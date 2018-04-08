@@ -12,8 +12,8 @@ Entity::Entity(Mesh *pp, Material *mm, XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 sca)
 	material = mm;
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
 	translation = pos;
-	scale = rot;
-	rotate = sca;
+	scale = sca;
+	rotate = rot;
 	parent = NULL;
 	setWorld();
 }
@@ -100,6 +100,7 @@ Material* Entity::GetMaterial()
 
 Entity::~Entity()
 {
+	
 }
 
 void Entity::Update()
