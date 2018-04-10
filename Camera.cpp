@@ -15,6 +15,7 @@ Camera::Camera(XMFLOAT3 pos, XMFLOAT3 dirz)
 	camDir = dirz;
 	rotationX = 0;
 	rotationY = 0;
+	onCar = false;
 }
 
 XMFLOAT3 Camera::GetCamPos() {
@@ -34,6 +35,11 @@ void Camera::SetRotation(float x, float y) {
 	rotationY+=y;
 
 	rotationX = max(min(rotationX, XM_PIDIV2), -XM_PIDIV2);
+}
+
+void Camera::SetParent(Entity* parent)
+{
+	camPos = XMFLOAT3(parent->getTranslation().x, parent->getTranslation().y + 0.9 ,parent->getTranslation().z);
 }
 
 XMFLOAT4X4 Camera::GetView() {
@@ -81,27 +87,19 @@ void Camera::Update(float totaltime) {
 
 	XMVECTOR crossp= XMVector3Cross(camDirv, up);
 	XMFLOAT3 lft = XMFLOAT3(XMVectorGetX(crossp), XMVectorGetY(crossp), XMVectorGetZ(crossp));
-	//cout << "ss";
-
 
 	// the calculation!!!!!    where to put???? camera update or game update(delta time??) 
 	if (GetAsyncKeyState('W') & 0x8000) {
-		
 		camPos.x = camPos.x + camDir.x*totaltime; 
 		camPos.y = camPos.y + camDir.y*totaltime;
 		camPos.z = camPos.z + camDir.z*totaltime;
-
-		//camPosv = XMVectorAdd(camPosv, camDirv);
-		
 	}
 	if (GetAsyncKeyState('S') & 0x8000) {
-		
 		camPos.x = camPos.x - camDir.x*totaltime;
 		camPos.y = camPos.y - camDir.y*totaltime;
 		camPos.z = camPos.z - camDir.z*totaltime;
 	}
 	if (GetAsyncKeyState('A') & 0x8000) {
-		
 		camPos.x = camPos.x + lft.x*totaltime;
 		camPos.y = camPos.y + lft.y*totaltime;
 		camPos.z = camPos.z + lft.z*totaltime;
@@ -113,6 +111,9 @@ void Camera::Update(float totaltime) {
 	}
 	if (GetAsyncKeyState('X') & 0x8000) {
 		camPos.y -= totaltime;
+	}
+	if (GetAsyncKeyState('Z') & 0x8000) {
+		camPos.y += totaltime;
 	}
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
 		camPos.y += totaltime;

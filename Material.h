@@ -17,7 +17,6 @@ class Material
 	ID3D11RasterizerState* rsSky;
 	ID3D11DepthStencilState* dsSky;
 
-
 	//PBR shader resource view
 	ID3D11ShaderResourceView * albedoSrv;
 	ID3D11ShaderResourceView * metallicSrv;

@@ -175,18 +175,29 @@ void Game::Update(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
-	//cout << deltaTime;
-	//float moving = sin(totalTime) * 2.0f;
-	//float moving = sin(0) * 2.0f;
 
-
+	// Get on the car
+	if (GetAsyncKeyState('Q') & 0x8000) {  
+		camera->onCar = true;
+	}
+	if (GetAsyncKeyState('E') & 0x8000) {
+		camera->onCar = false;
+	}
+		
 	scene->snowMan0Body->Update();
 	scene->snowMan0Head->Update();
 	scene->snowMan0Eye0->Update();
 	scene->snowMan0Eye1->Update();
 
+	float carx = sin(totalTime) * 2.0f;
+	float carz = cos(totalTime) * 2.0f;;
+	scene->car->setTranslation(carx, 0, carz);
+	scene->car->Update();
+
 	scene->ground->Update();
 	scene->skyBox->Update();
+
+	if (camera->onCar) camera->SetParent(scene->car);
 
 	camera->Update(deltaTime);
 }
@@ -233,15 +244,11 @@ void Game::Draw(float deltaTime, float totalTime)
 		q->setWorld();
 
 		q->GetMaterial()->SetVertexShaderMatrix(q->getWorld(), camera->GetView(), camera->GetProjection());
-		//q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightView", shadowMapRender->lightViewMatrix);
-		//q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightProjection", shadowMapRender->lightProjectionMatrix);
+		q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightView", shadowMapRender->lightViewMatrix);
+		q->GetMaterial()->GetvertexShader()->SetMatrix4x4("lightProjection", shadowMapRender->lightProjectionMatrix);
 		q->GetMaterial()->GetvertexShader()->CopyAllBufferData();
 
 		q->GetMaterial()->GetvertexShader()->SetShader();
-
-
-		//q->GetMaterial()->GetpixelShader()->SetFloat("metallicP", scene->metallic[i]); //vertically increase metallic
-		//q->GetMaterial()->GetpixelShader()->SetFloat("roughnessP", scene->roughness[i]);  //horizontally increase roughness
 
 		q->GetMaterial()->GetpixelShader()->SetData("pl0", &scene->pointLight0, sizeof(PointLight));
 		q->GetMaterial()->GetpixelShader()->SetData("pl1", &scene->pointLight1, sizeof(PointLight));
@@ -253,7 +260,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		//q->GetMaterial()->SetPrefilterMapSrvForPBR(prefilteredCapturer->GetShaderResourceView());
 		//q->GetMaterial()->SetBRDFLUTSrvForPBR(brdfLUTCapturer->GetShaderResourceView());
 		//scene->quads[i]->getMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
-		//q->GetMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
+		q->GetMaterial()->SetShadowStuff(shadowMapRender->GetShaderResourceView(), shadowMapRender->GetShadowSampler());
 		//q->GetMaterial()->SetPBRPixelShaderSrv();
 		q->GetMaterial()->SetPixelShaderSrv();
 

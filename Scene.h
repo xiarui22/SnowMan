@@ -24,6 +24,9 @@ class Scene
 	Mesh * skyBoxMesh;
 	Mesh * groundMesh;
 
+	Mesh* houseMesh;
+	Material* houseMaterial;
+
 public:
 	Scene();
 	~Scene();
@@ -32,8 +35,16 @@ public:
 	Entity* snowMan0Eye0;
 	Entity* snowMan0Eye1;
 
+	Entity* snowMan1Body;
+	Entity* snowMan1Head;
+	Entity* snowMan1Eye0;
+	Entity* snowMan1Eye1;
+
 	Entity* ground;
 	Entity* skyBox;
+	Entity* car;
+
+	Entity* house;
 
 	PointLight pointLight0;
 	PointLight pointLight1;

@@ -10,6 +10,9 @@ cbuffer externalData : register(b0)
 	matrix world;
 	matrix view;
 	matrix projection;
+
+	matrix lightView;
+	matrix lightProjection;
 };
 
 // Struct representing a single vertex worth of data
@@ -47,6 +50,7 @@ struct VertexToPixel
 	float3 normal       : NORMAL;
 	float3 worldPos		: WORLDPOS;
 	float2 uv           : TEXCOORD;
+	float4 posForShadow : POSITION1;
 };
 
 // --------------------------------------------------------
@@ -89,5 +93,9 @@ VertexToPixel main( VertexShaderInput input )
 	//output.worldPos = mul(float4(input.position, 1.0f), world).xyz;
 	// Whatever we return will make its way through the pipeline to the
 	// next programmable stage we're using (the pixel shader for now)
+
+	matrix shadowWVP = mul(mul(world, lightView), lightProjection);
+	output.posForShadow = mul(float4(input.position, 1.0f), shadowWVP);
+
 	return output;
 }

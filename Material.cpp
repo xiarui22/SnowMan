@@ -156,7 +156,9 @@ void Material::SetVertexShaderMatrix(XMFLOAT4X4 worldm, XMFLOAT4X4 viewm, XMFLOA
 void Material::SetPixelShaderSrv()
 {
 	pixelShader->SetShaderResourceView("diffuseTexture", srv);
+	pixelShader->SetShaderResourceView("shadowMap", shadowSRV);
 	pixelShader->SetSamplerState("basicSampler", samplerState);
+	pixelShader->SetSamplerState("shadowSampler", shadowSampler);
 	pixelShader->CopyAllBufferData();
 	pixelShader->SetShader();
 }

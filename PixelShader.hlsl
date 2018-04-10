@@ -15,6 +15,7 @@ struct VertexToPixel
 	float3 normal       : NORMAL;
 	float3 worldPos		: WORLDPOS;
 	float2 uv           : TEXCOORD;
+	float4 posForShadow : POSITION1;
 };
 
 // --------------------------------------------------------
@@ -53,7 +54,9 @@ cbuffer externalData : register(b0)
 };
 
 Texture2D diffuseTexture  : register(t0);
-SamplerState basicSampler : register(s0);
+Texture2D shadowMap		: register(t1);
+SamplerState basicSampler : register(s0); 
+SamplerState shadowSampler : register(s2);
 
 float4 main(VertexToPixel input) : SV_TARGET
 {
@@ -82,12 +85,37 @@ for (int i = 0; i < 2; i++) {
     plight += pointLight[i].pointLightColor * lightAmountPL*surfaceColor;
 }
 
-// Specular highlight for point light
-//float3 toCamera = normalize(pl.cameraPosition - input.worldPos);
-//float3 refl = reflect(-dirToPointLight, input.normal);
-//float specular = pow(saturate(dot(refl, toCamera)), 8);
+// Shadow mapping
+// Percentage closer filtering
 
-//return  dlight + dlight0+ plight;
-	return plight;
+float3 color = float3(0, 0, 0);
+float width, height;
+shadowMap.GetDimensions(width, height);
+float2 textureSize = float2(width, height);
+float2 texelSize = 1 / textureSize;
+float bias = 0.001f;         //  Set the bias value for fixing the floating point precision issues.
+float3 projCoords = input.posForShadow.xyz / input.posForShadow.w;
+projCoords.xy = projCoords.xy * 0.5 + 0.5;
+projCoords.y = 1 - projCoords.y;
+
+
+if ((saturate(projCoords.x) == projCoords.x) && (saturate(projCoords.y) == projCoords.y)) {
+
+	float currentDepth = projCoords.z;
+	currentDepth -= bias;
+	float shadow = 0;
+	for (int i = -3; i < 4; i++) {
+		for (int j = -3; j < 4; j++) {
+			float cloestDepth = shadowMap.Sample(shadowSampler, projCoords.xy + float2(i, j) * texelSize).r;
+			shadow += currentDepth > cloestDepth ? 1 : 0;
+		}
+	}
+	shadow /= 25;
+	color = plight.xyz * (1 - shadow);
+}
+else {
+	color = plight.xyz;
+}
+	return float4(color, 1);
 
 }

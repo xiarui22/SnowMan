@@ -14,6 +14,8 @@ class Camera
 	DirectX::XMFLOAT4X4 viewMatrix;
 	DirectX::XMFLOAT4X4 projectionMatrix;
 
+	
+
 public:
 	Camera();
 	Camera(DirectX::XMFLOAT3, DirectX::XMFLOAT3);
@@ -32,5 +34,8 @@ public:
 	void Update(float);
 
 	void SetRotation(float, float);
+
+	void SetParent(Entity* );
+	bool onCar;
 };
 
