@@ -24,9 +24,6 @@ cbuffer externalData : register(b0)
 	PointLight pl3;
 	//camera position
 	float3 camPos;
-	//parameters
-	float metallicP;
-	float roughnessP;
 };
 
 
@@ -42,7 +39,6 @@ Texture2D shadowMap		: register(t8);
 
 SamplerState basicSampler : register(s0);
 SamplerState samplerForLUT : register(s1);
-//SamplerComparisonState shadowSampler : register(s2);
 SamplerState shadowSampler : register(s2);
 static float PI = 3.14159265359f;
 
@@ -114,18 +110,16 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float ao;
 	float3 normal;
 
-	albedo = float4(1, 1, 1, 1);
-	//float3 albedof = pow(albedoMap.Sample(basicSampler, input.uv).rgb, 2.2);
+	//albedo = float4(1, 1, 1, 1);
+	float3 albedof = pow(albedoMap.Sample(basicSampler, input.uv).rgb, 2.2);
 	
-	//albedo = float4(albedof, 1);
-	//input.normal = getNormalFromNormalMap(input);
+	albedo = float4(albedof, 1);
+	input.normal = getNormalFromNormalMap(input);
 	input.normal = normalize(input.normal);
-	//metallic = metallicMap.Sample(basicSampler, input.uv).r + metallicP;
-	//roughness = roughnessMap.Sample(basicSampler, input.uv).r + roughnessP;
-	//ao = aoMap.Sample(basicSampler, input.uv).r;
-	metallic = metallicP;
-	roughness = roughnessP;
-	ao = 1;
+	
+	metallic = metallicMap.Sample(basicSampler, input.uv).r + 0.1;
+	roughness = roughnessMap.Sample(basicSampler, input.uv).r;
+	ao = aoMap.Sample(basicSampler, input.uv).r;
 
 	PointLight pointLight[4];
     pointLight[0] = pl0;
@@ -144,7 +138,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 		float3 L = normalize(pointLight[i].pointLightPosition - input.worldPos);
 		float3 H = normalize(L + V);
 		float distance = length(pointLight[i].pointLightPosition - input.worldPos);
-		float attenuation = 1 / (distance*distance);
+		float attenuation = 1 / (distance*distance) * 10;
 		float3 radiance = pointLight[i].pointLightColor*attenuation;
 
 		//cook-torrance BRDF
@@ -212,7 +206,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 		color = (ambient + Lo) * (1 - shadow);
 	}
 	else {
-		//color = ambient + Lo;
+		color = ambient + Lo;
 	}
 	
 

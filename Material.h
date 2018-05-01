@@ -45,6 +45,8 @@ public:
 	ID3D11RasterizerState* GetRastState();
 	ID3D11DepthStencilState* GetDepthStencilState();
 
+	MaterialType GetMaterialType();
+
 
 	void SetSamplerState(ID3D11SamplerState *);
 	void SetShaderResource(ID3D11ShaderResourceView *);

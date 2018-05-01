@@ -18,6 +18,9 @@ Mesh::Mesh(Mesh * m)
 }
 
 void Mesh::createBuffer(Vertex vertices[], int vn, unsigned int  indices[], int in, ID3D11Device * device) {
+
+	CalculateTangents(&vertices[0], vn, &indices[0], in);
+
 	inte = in;
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -241,7 +244,7 @@ Mesh::Mesh(char * objFile, ID3D11Device * device) {
 
 	createBuffer(vert0, vertCounter, indices0, vertCounter, device);
 
-	CalculateTangents(&verts[0], verts.size(), &indices[0], indices.size());
+	//CalculateTangents(&verts[0], verts.size(), &indices[0], indices.size());
 
 }
 

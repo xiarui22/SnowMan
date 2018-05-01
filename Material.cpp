@@ -130,7 +130,11 @@ void Material::LoadVertexShaders(ID3D11Device * device, ID3D11DeviceContext * co
 	vertexShader = new SimpleVertexShader(device, context);
 	wstring path = L"x64/Debug/" + (wstring)name + L".cso";
 	const wchar_t *src = path.c_str();
-	vertexShader->LoadShaderFile(src);
+	if (!vertexShader->LoadShaderFile(src)) {
+		wstring path = (wstring)name + L".cso";
+		const wchar_t *src = path.c_str();
+		vertexShader->LoadShaderFile(src);
+	}
 }
 
 void Material::LoadPixelShaders(ID3D11Device *device, ID3D11DeviceContext * context, const wchar_t * name)
@@ -138,7 +142,11 @@ void Material::LoadPixelShaders(ID3D11Device *device, ID3D11DeviceContext * cont
 	pixelShader = new SimplePixelShader(device, context);
 	wstring path = L"x64/Debug/" + (wstring)name + L".cso";
 	const wchar_t *src = path.c_str();
-	pixelShader->LoadShaderFile(src);
+	if (!pixelShader->LoadShaderFile(src)) {
+		wstring path = (wstring)name + L".cso";
+		const wchar_t *src = path.c_str();
+		pixelShader->LoadShaderFile(src);
+	}
 }
 
 
@@ -232,6 +240,11 @@ ID3D11RasterizerState* Material::GetRastState()
 ID3D11DepthStencilState* Material::GetDepthStencilState()
 {
 	return dsSky;
+}
+
+MaterialType Material::GetMaterialType()
+{
+	return type;
 }
 
 void Material::SetSamplerState(ID3D11SamplerState *SamplerState) {
